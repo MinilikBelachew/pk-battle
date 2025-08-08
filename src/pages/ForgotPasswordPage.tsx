@@ -1,0 +1,138 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Layout from '../components/layout/Layout';
+import TikTokBanner from '../components/ui/TikTokBanner';
+
+/**
+ * Props for the ForgotPasswordPage component.
+ * @param onNavigate - A function to handle navigation between pages.
+ */
+interface ForgotPasswordPageProps {
+  onNavigate?: (page: string) => void;
+}
+
+const ForgotPasswordPage: React.FC = () => {
+  const navigate = useNavigate();
+  // State to hold the email input value
+  const [email, setEmail] = useState('');
+  
+  // State for showing success/error messages
+  const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+  
+  /**
+   * Handles changes to the email input field.
+   * @param e - The change event from the input element.
+   */
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  /**
+   * Handles the form submission for password reset.
+   * In a real application, this would call an API to send a reset email.
+   * @param e - The form submission event.
+   */
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // TODO: Implement actual password reset logic here, e.g., an API call.
+    // For this example, we'll just log the email and show a success message.
+    console.log('Password reset requested for email:', email);
+    
+    // Simulate a successful API call
+    setMessage({
+      text: 'If an account with that email exists, a reset link has been sent.',
+      type: 'success',
+    });
+    
+    // You can optionally navigate back to the login page after a delay.
+    // setTimeout(() => {
+    //   navigate('/login');
+    // }, 3000);
+  };
+
+  return (
+    <Layout isAuthenticated={false} showHeader={false}>
+      <div className="min-h-screen flex flex-col">
+        {/* Top Section - Logo */}
+        <div className="p-8">
+          <button 
+            onClick={() => navigate('/')}
+            className="bg-sunrise text-black px-6 py-2 rounded-lg font-bold hover:bg-opacity-80 transition-colors"
+          >
+            LOGO
+          </button>
+        </div>
+
+        {/* Banner Section - Full Width */}
+        <div className="w-full mb-8">
+          <TikTokBanner />
+        </div>
+
+        {/* Form Section - Centered */}
+        <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+          <div className="w-full max-w-md">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-white mb-2">Forgot Password?</h2>
+              <p className="text-gray-300">Enter your email address to receive a password reset link.</p>
+            </div>
+
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              <div className="space-y-4">
+                {/* Email Input */}
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-600 rounded-lg bg-white text-dark-blue placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sunrise focus:border-transparent"
+                    placeholder="Please enter"
+                  />
+                </div>
+              </div>
+
+              {/* Message display */}
+              {message && (
+                <div 
+                  className={`p-3 rounded-lg text-center font-semibold 
+                    ${message.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`
+                  }
+                >
+                  {message.text}
+                </div>
+              )}
+
+              {/* Reset Password Button */}
+              <button
+                type="submit"
+                className="w-full bg-sunrise text-black py-3 px-4 rounded-lg font-bold text-lg hover:bg-opacity-80 transition-colors focus:outline-none focus:ring-2 focus:ring-sunrise focus:ring-offset-2 focus:ring-offset-dark-blue"
+              >
+                Reset Password
+              </button>
+            </form>
+
+            {/* Back to Login Link */}
+            <div className="text-center mt-6">
+              <p className="text-gray-300">
+                Remember your password?{' '}
+                <button 
+                  onClick={() => navigate('/login')}
+                  className="text-sunrise hover:text-opacity-80 font-semibold"
+                >
+                  Login here
+                </button>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
+};
+
+export default ForgotPasswordPage;
