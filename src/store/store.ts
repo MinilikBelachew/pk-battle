@@ -1,9 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
-import { persistStore, persistReducer } from 'redux-persist';
+import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import rootReducer from './rootReducer';
 import { rootSaga } from './rootSaga';
+import { rehydrateStart, rehydrateComplete } from './slice/auth';
 
 // Create saga middleware
 const sagaMiddleware = createSagaMiddleware();
@@ -25,13 +26,24 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }).concat(sagaMiddleware),
 });
 
 // Create persistor
-export const persistor = persistStore(store);
+export const persistor = persistStore(store, null, () => {
+  // This callback runs after rehydration is complete
+  store.dispatch(rehydrateComplete());
+});
+
+// Dispatch rehydrate start when persistor starts
+persistor.subscribe(() => {
+  const { bootstrapped } = persistor.getState();
+  if (!bootstrapped) {
+    store.dispatch(rehydrateStart());
+  }
+});
 
 // Run saga
 sagaMiddleware.run(rootSaga);
