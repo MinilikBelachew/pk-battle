@@ -26,7 +26,7 @@ const Header: React.FC<HeaderProps> = () => {
             onClick={() => handleNavigation('')}
             className="bg-[#ffcb05] text-[#1e2a4a] px-3 py-1 sm:px-4 sm:py-2 md:px-6 md:py-2 rounded-lg font-bold hover:bg-opacity-80 transition-colors text-sm sm:text-base cursor-pointer"
           >
-            LOGO
+            L
           </button>
         </div>
 
