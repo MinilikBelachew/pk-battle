@@ -3,19 +3,21 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
 import FullScreenLoader from '../ui/FullScreenLoader';
+import { usePersistStatus } from '../../hooks/usePersistStatus';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated, rehydrating } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const isRehydrated = usePersistStatus();
   const location = useLocation();
 
-  console.log('ProtectedRoute - Auth state:', { isAuthenticated, rehydrating, pathname: location.pathname });
+  console.log('ProtectedRoute - Auth state:', { isAuthenticated, isRehydrated, pathname: location.pathname });
 
   // Show loader while Redux Persist is rehydrating
-  if (rehydrating) {
+  if (!isRehydrated) {
     console.log('Redux Persist is rehydrating, showing loader');
     return <FullScreenLoader message="Loading..." />;
   }

@@ -6,7 +6,6 @@ const initialState = {
   loading: false,
   error: null,
   token: null,
-  rehydrating: true, // Track Redux Persist rehydration
 };
 
 // Define the type for the payload that registerRequest will accept
@@ -68,6 +67,7 @@ const authSlice = createSlice({
     },
     resetPasswordSuccess: (state, action) => {
       state.user = action.payload.user;
+      state.token = action.payload.token;
       state.loading = false;
     },
     resetPasswordFailure: (state, action) => {
@@ -85,13 +85,6 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
-    // Redux Persist rehydration actions
-    rehydrateStart: (state) => {
-      state.rehydrating = true;
-    },
-    rehydrateComplete: (state) => {
-      state.rehydrating = false;
-    },
   },
 });
 
@@ -107,8 +100,6 @@ export const {
   resetPasswordFailure,
   resetPasswordRequest,
   resetPasswordSuccess,
-  rehydrateStart,
-  rehydrateComplete,
 } = authSlice.actions;
 
 export const authReducer = authSlice.reducer;
