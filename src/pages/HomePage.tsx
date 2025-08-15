@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import Layout from '../components/layout/Layout';
-import BettingCard from '../components/betting/BettingCard';
+// import BettingCard from '../components/betting/BettingCard';
 import TikTokBanner from '../components/ui/TikTokBanner';
 import NavigationTabs from '../components/ui/NavigationTabs';
 
 const HomePage: React.FC = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [activeTab] = useState('tiktok-live');
 
   // Mock data for betting cards
 
 
 
-  const handleBet = (participantId: string) => {
-    console.log('Bet placed on:', participantId);
-    // TODO: Implement betting logic
-  };
+  // const handleBet = (participantId: string) => {
+  //   console.log('Bet placed on:', participantId);
+  //   // TODO: Implement betting logic
+  // };
 
   return (
-    <Layout isAuthenticated={true}>
+    <Layout >
       {/* Hero Banner */}
       <div className="relative h-64 mb-8">
         <TikTokBanner className="h-full" />

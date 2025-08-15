@@ -1,5 +1,7 @@
 @import "tailwindcss";
-
+body {
+  background: #1F4068;
+}
 @theme {
   /* background colors */
   --color-dark-blue: #1F4068;

@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/layout/Layout';
 import TikTokBanner from '../components/ui/TikTokBanner';
+import Spinner from '../components/ui/Spinner';
+import axios from 'axios';
 
 /**
  * Props for the ForgotPasswordPage component.
  * @param onNavigate - A function to handle navigation between pages.
  */
-interface ForgotPasswordPageProps {
-  onNavigate?: (page: string) => void;
-}
+// interface ForgotPasswordPageProps {
+//   onNavigate?: (page: string) => void;
+// }
 
 const ForgotPasswordPage: React.FC = () => {
   const navigate = useNavigate();
@@ -18,6 +20,8 @@ const ForgotPasswordPage: React.FC = () => {
   
   // State for showing success/error messages
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   
   /**
    * Handles changes to the email input field.
@@ -32,37 +36,65 @@ const ForgotPasswordPage: React.FC = () => {
    * In a real application, this would call an API to send a reset email.
    * @param e - The form submission event.
    */
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement actual password reset logic here, e.g., an API call.
-    // For this example, we'll just log the email and show a success message.
-    console.log('Password reset requested for email:', email);
+    setFormError(null);
+    setMessage(null);
     
-    // Simulate a successful API call
-    setMessage({
-      text: 'If an account with that email exists, a reset link has been sent.',
-      type: 'success',
-    });
+    // Client-side validation
+    if (!email.trim()) {
+      setFormError('Email is required');
+      return;
+    }
+    if (!/.+@.+\..+/.test(email)) {
+      setFormError('Please enter a valid email address');
+      return;
+    }
     
-    // You can optionally navigate back to the login page after a delay.
-    // setTimeout(() => {
-    //   navigate('/login');
-    // }, 3000);
+    try {
+      setLoading(true);
+      await axios.post('http://localhost:3000/api/auth/request-password-reset', { email }, { headers: { 'Content-Type': 'application/json' }, withCredentials: true });
+      setMessage({
+        text: 'If an account with that email exists, a reset link has been sent to your email.',
+        type: 'success',
+      });
+      // Clear the email field after successful request
+      setEmail('');
+    } catch (error: any) {
+      const backendMessage = error?.response?.data?.message;
+      const msg = getErrorMessage(backendMessage || 'Failed to request password reset');
+      setMessage({ text: msg, type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Enhanced error message handling
+  const getErrorMessage = (error: any) => {
+    if (typeof error === 'string') {
+      // Handle specific backend error messages
+      if (error.toLowerCase().includes('user not found') || error.toLowerCase().includes('no account')) {
+        return 'No account found with this email address.';
+      }
+      if (error.toLowerCase().includes('email')) {
+        return 'Please enter a valid email address.';
+      }
+      if (error.toLowerCase().includes('rate limit') || error.toLowerCase().includes('too many requests')) {
+        return 'Too many reset requests. Please wait a few minutes before trying again.';
+      }
+      if (error.toLowerCase().includes('validation')) {
+        return 'Please check your email format and try again.';
+      }
+      return error;
+    }
+    return 'Failed to request password reset. Please try again.';
   };
 
   return (
-    <Layout isAuthenticated={false} showHeader={false}>
+    // The prop name has been corrected from `showHeader` to `showHeaderNavigation`
+    <Layout showHeaderNavigation={false}>
       <div className="min-h-screen flex flex-col">
-        {/* Top Section - Logo */}
-        <div className="p-8">
-          <button 
-            onClick={() => navigate('/')}
-            className="bg-sunrise text-black px-6 py-2 rounded-lg font-bold hover:bg-opacity-80 transition-colors"
-          >
-            LOGO
-          </button>
-        </div>
-
+     
         {/* Banner Section - Full Width */}
         <div className="w-full mb-8">
           <TikTokBanner />
@@ -77,6 +109,15 @@ const ForgotPasswordPage: React.FC = () => {
             </div>
 
             <form className="space-y-6" onSubmit={handleSubmit}>
+              {(formError) && (
+                <div className="rounded-sm bg-red-500 text-white px-4 py-2 text-sm">{formError}</div>
+              )}
+              {loading && (
+                <div className="flex items-center gap-2 text-white mb-2">
+                  <Spinner />
+                  <span>Sending reset link...</span>
+                </div>
+              )}
               <div className="space-y-4">
                 {/* Email Input */}
                 <div>

@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/layout/Layout';
 import TikTokBanner from '../components/ui/TikTokBanner';
+import Spinner from '../components/ui/Spinner';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginRequest } from '../store/slice/auth';
+import type { RootState } from '../store/rootReducer';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -19,16 +23,69 @@ const LoginPage: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: Implement login logic
-    console.log('Login data:', formData);
-    // After successful login, navigate to home
-    navigate('/home');
-  };
+  const dispatch = useDispatch();
+  const { isAuthenticated, loading, error } = useSelector((state: RootState) => state.auth);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      setSuccessMessage('Login successful! Redirecting to home...');
+      setTimeout(() => {
+        navigate('/home');
+      }, 1500);
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError(null);
+    
+    // Client-side validation
+    if (!formData.email.trim()) {
+      setFormError('Email is required');
+      return;
+    }
+    if (!/.+@.+\..+/.test(formData.email)) {
+      setFormError('Please enter a valid email address');
+      return;
+    }
+    if (!formData.password) {
+      setFormError('Password is required');
+      return;
+    }
+    if (formData.password.length < 8) {
+      setFormError('Password must be at least 8 characters long');
+      return;
+    }
+    
+    const payload = { email: formData.email, password: formData.password };
+    dispatch(loginRequest(payload));
+  };
+
+  // Enhanced error message handling
+  const getErrorMessage = (error: any) => {
+    if (typeof error === 'string') {
+      // Handle specific backend error messages
+      if (error.toLowerCase().includes('invalid credentials') || error.toLowerCase().includes('incorrect')) {
+        return 'Incorrect email or password. Please try again.';
+      }
+      if (error.toLowerCase().includes('user not found')) {
+        return 'No account found with this email address.';
+      }
+      if (error.toLowerCase().includes('password')) {
+        return 'Incorrect password. Please try again.';
+      }
+      if (error.toLowerCase().includes('email')) {
+        return 'Please enter a valid email address.';
+      }
+      return error;
+    }
+    return 'Login failed. Please try again.';
+  };
 
   return (
-    <Layout isAuthenticated={false} showHeaderNavigation={false}>
+    <Layout showHeaderNavigation={false}>
       <div className="min-h-screen flex flex-col">
 
         {/* Banner Section - Full Width */}
@@ -39,6 +96,23 @@ const LoginPage: React.FC = () => {
         {/* Form Section - Centered */}
         <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
           <div className="w-full max-w-md">
+            {(formError || error) && (
+              <div className="flex items-center gap-2 text-white mb-4 bg-red-500 rounded-sm px-3 py-2 text-sm">
+                {formError || getErrorMessage(error)}
+              </div>
+            )}
+            {loading && (
+              <div className="flex items-center gap-2 text-white mb-4">
+                <Spinner />
+                <span>Signing you in...</span>
+              </div>
+            )}
+            {successMessage && (
+              <div className="flex items-center gap-2 text-white mb-4 bg-green-500 rounded-sm px-3 py-2 text-sm">
+                {successMessage}
+              </div>
+            )}
+
             
 
             <form className="space-y-6" onSubmit={handleSubmit}>
@@ -55,7 +129,7 @@ const LoginPage: React.FC = () => {
                     required
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-600 bg-white text-dark-blue placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sunrise focus:border-transparent"
+                    className="w-full px-4 py-3 border rounded-sm border-gray-600 bg-white text-dark-blue placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sunrise focus:border-transparent"
                     placeholder="Please enter"
                   />
                 </div>
@@ -81,7 +155,7 @@ const LoginPage: React.FC = () => {
                     required
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-600 bg-white text-dark-blue placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sunrise focus:border-transparent"
+                    className=" rounded-sm w-full px-4 py-3 border border-gray-600 bg-white text-dark-blue placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sunrise focus:border-transparent"
                     placeholder="Please enter"
                   />
                 </div>
@@ -107,7 +181,7 @@ const LoginPage: React.FC = () => {
                 <button
                   type="submit"
                   // Changed to be smaller than the form and centered
-                  className="w-2/3 bg-sunrise text-black py-3 px-4 font-bold hover:bg-opacity-80 transition-colors"
+                  className="rounded-sm w-2/3 bg-sunrise text-black py-3 px-4 font-bold hover:bg-opacity-80 transition-colors"
                 >
                   Sign In
                 </button>
@@ -120,7 +194,7 @@ const LoginPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => navigate('/register')}
-                    className="text-sunrise hover:text-opacity-80 font-semibold"
+                    className=" text-sunrise cursor-pointer hover:text-opacity-80 font-semibold"
                   >
                     Register here
                   </button>

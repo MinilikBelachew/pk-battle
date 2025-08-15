@@ -82,7 +82,7 @@ const MarketsPage: React.FC = () => {
   };
 
   return (
-    <Layout isAuthenticated={true} showHeaderNavigation={false}>
+    <Layout  showHeaderNavigation={false}>
       {/* Navigation Tabs */}
       <NavigationTabs activeTab={activeTab} />
 

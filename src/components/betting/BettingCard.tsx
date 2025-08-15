@@ -1,5 +1,6 @@
 import React from 'react';
 
+// Define the Participant interface
 interface Participant {
   id: string;
   name: string;
@@ -10,7 +11,8 @@ interface Participant {
 interface BettingCardProps {
   id: string;
   title: string;
-  participants: [any, any];
+  // Change the participants type to an array of Participant objects
+  participants: Participant[];
   volume: string;
   date: string;
   chance?: number;
@@ -21,14 +23,14 @@ interface BettingCardProps {
 }
 
 const BettingCard: React.FC<BettingCardProps> = ({
-  id,
+  //   id,
   title,
   participants,
   volume,
   date,
   chance = 60,
   isSettled = false,
-  winner,
+//   winner,
   onBet,
   onNavigate
 }) => {
@@ -45,7 +47,16 @@ const BettingCard: React.FC<BettingCardProps> = ({
     }
   };
 
-  const [participant1, participant2] = participants;
+  // Use a nullish coalescing operator to safely access the first two participants
+  // This prevents an error if the array has fewer than two items.
+  const participant1 = participants[0] ?? null;
+  const participant2 = participants[1] ?? null;
+
+  // Add a check to ensure we have the participants we need before rendering.
+  // Returning null or an error state is a good practice.
+  if (!participant1 || !participant2) {
+    return <div>Error: Not enough participants.</div>;
+  }
 
   return (
     <div
@@ -169,7 +180,7 @@ const BettingCard: React.FC<BettingCardProps> = ({
         </div>
       </div>
     </div>
-  );
+  );
 };
 
 export default BettingCard;

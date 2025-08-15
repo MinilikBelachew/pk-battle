@@ -10,9 +10,9 @@ const TikTokBanner: React.FC<TikTokBannerProps> = ({ className = '' }) => {
 
   // Use your actual local images here (adjust filenames as needed)
   const bannerImages = [
-    '/banner/tiktok-ai.png',
-    '/banner/tik-tok.png',
-    '/banner/tiktok.jpg',
+    '/banner/tiktok-1.jpg',
+    '/banner/tiktok-2.jpg',
+    '/banner/tiktok-3.jpg',
   ];
 
   useEffect(() => {

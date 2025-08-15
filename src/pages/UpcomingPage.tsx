@@ -1,56 +1,116 @@
-import React from 'react';
-import Layout from '../components/layout/Layout';
-import BettingCard from '../components/betting/BettingCard';
-import TikTokBanner from '../components/ui/TikTokBanner';
-import NavigationTabs from '../components/ui/NavigationTabs';
-import { MOCK_BETTING_MATCHES } from '../constants';
+import React from "react";
+import Layout from "../components/layout/Layout";
+import BettingCard from "../components/betting/BettingCard";
+import { useNavigate } from "react-router-dom";
+// import TikTokBanner from '../components/ui/TikTokBanner';
+import NavigationTabs from "../components/ui/NavigationTabs";
+import { MOCK_BETTING_MATCHES } from "../constants";
 
 const UpcomingPage: React.FC = () => {
-const activeTab = 'upcoming';
+  const activeTab = "upcoming";
+  const navigate = useNavigate();
 
-// Split matches into Today and Tomorrow (for demo purposes)
- const todayMatches = MOCK_BETTING_MATCHES.slice(0, 3);
-const tomorrowMatches = MOCK_BETTING_MATCHES.slice(3, 9);
+  const handleNavigate = (match: any) => {
+    navigate(`/market-card/${match.id}`);
+  };
 
-return (
-  <Layout isAuthenticated={true} showHeaderNavigation={false}>
-{/* Navigation Tabs */}
-<NavigationTabs activeTab={activeTab} />
+  // Split matches into Today and Tomorrow (for demo purposes)
+  const todayMatches = MOCK_BETTING_MATCHES.slice(0, 3);
+  const tomorrowMatches = MOCK_BETTING_MATCHES.slice(3, 9);
 
-{/* Main Content */}
-<div className="bg-dark-blue py-8">
-<div className="container mx-auto px-4">
-{/* Today Section */}
-<div className="mb-8">
- <h2 className="text-white text-2xl font-bold mb-6 border-b border-light-grey pb-2">Today</h2>
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-{todayMatches.map((match, index) => (
-<BettingCard
-key={`today-${index}`}
- {...match}
- isSettled={false}
- />
- ))}
- </div>
-</div>
+  return (
+    <Layout showHeaderNavigation={false}>
+      {/* Navigation Tabs */}
+      <NavigationTabs activeTab={activeTab} />
 
-{/* Tomorrow Section */}
-<div>
-<h2 className="text-white text-2xl font-bold mb-6 border-b border-light-grey pb-2">Tomorrow</h2>
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-{tomorrowMatches.map((match, index) => (
- <BettingCard
-key={`tomorrow-${index}`}
-{...match}
- isSettled={false}
-/>
-))}
-</div>
-</div>
-</div>
-</div>
-</Layout>
-);
+      {/* Main Content */}
+      <div className="bg-dark-blue py-8">
+        <div className="container mx-auto px-4">
+          {/* Today Section */}
+          <div className="mb-8">
+             
+            <h2 className="text-white text-2xl font-bold mb-6 border-b border-light-grey pb-2">
+              Today
+            </h2>
+             
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {todayMatches.map((match) => (
+                <BettingCard
+                  key={match.id}
+                  {...match}
+                  isSettled={false}
+                  onNavigate={() => handleNavigate(match)}
+                />
+              ))}
+               
+            </div>
+          </div>
+
+          {/* Tomorrow Section */}
+          <div>
+            <h2 className="text-white text-2xl font-bold mb-6 border-b border-light-grey pb-2">
+              Tomorrow
+            </h2>
+             
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {tomorrowMatches.map((match) => (
+                <BettingCard
+                  key={match.id}
+                  {...match}
+                  isSettled={false}
+                  onNavigate={() => handleNavigate(match)}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
 };
 
 export default UpcomingPage;
+
+// import React from 'react';
+// import Layout from '../components/layout/Layout';
+// import BettingCard from '../components/betting/BettingCard';
+// // import TikTokBanner from '../components/ui/TikTokBanner';
+// import NavigationTabs from '../components/ui/NavigationTabs';
+// import { MOCK_BETTING_MATCHES } from '../constants';
+
+// const UpcomingPage: React.FC = () => {
+// const activeTab = 'upcoming';
+
+// // Split matches into Today and Tomorrow (for demo purposes)
+//  const todayMatches = MOCK_BETTING_MATCHES.slice(0, 3);
+// const tomorrowMatches = MOCK_BETTING_MATCHES.slice(3, 9);
+
+// return (
+//   <Layout isAuthenticated={true} showHeaderNavigation={false}>
+// {/* Navigation Tabs */}
+// <NavigationTabs activeTab={activeTab} />
+
+// {/* Main Content */}
+// <div className="bg-dark-blue py-8">
+// <div className="container mx-auto px-4">
+// {/* Today Section */}
+// <div className="mb-8">
+//  <h2 className="text-white text-2xl font-bold mb-6 border-b border-light-grey pb-2">Today</h2>
+//  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+// {todayMatches.map((match, index) => (
+// <BettingCard
+// key={`today-${index}`}
+//  {...match}
+//  isSettled={false}
+//  />
+//  ))}
+//  </div>
+// </div>
+
+// {/* Tomorrow Section */}
+// <div>
+// <h2 className="text-white text-2xl font-bold mb-6 border-b border-light-grey pb-2">Tomorrow</h2>
+//  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+// {tomorrowMatches.map((match, index) => (
+//  <BettingCard
+// key={`

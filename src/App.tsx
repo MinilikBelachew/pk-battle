@@ -1,45 +1,51 @@
 // App.js
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import HomePage from './pages/HomePage';
+// import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
-import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import RecentlySettledPage from './pages/RecentlySettledPage';
+import RegisterPage from './pages/RegisterPage';
+import HomePage from './pages/HomePage';
+import UpcomingPage from './pages/UpcomingPage';
 import MarketsPage from './pages/MarketsPage';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
 import DepositPage from './pages/DepositPage';
 import WithdrawPage from './pages/WithdrawPage';
 import WalletPage from './pages/WalletPage';
-import OrderPlacedPage from './pages/OrderPlacedPage';
 import MarketCardPage from './pages/MarketCardPage';
-import UpcomingPage from './pages/UpcomingPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
+import NotFoundPage from './pages/NotFoundPage';
+import ProtectedRoute from './components/routing/ProtectedRoute';
+import PublicRoute from './components/routing/PublicRoute';
 
 function App() {
+
   return (
     <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/recently-settled" element={<RecentlySettledPage />} />
-          <Route path="/upcoming" element={<UpcomingPage />} />
-          <Route path="/markets" element={<MarketsPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/deposit" element={<DepositPage />} />
-          <Route path="/withdraw" element={<WithdrawPage />} />
-          <Route path="/wallet" element={<WalletPage />} />
-          <Route path="/order-placed" element={<OrderPlacedPage />} />
-          <Route path="/market-card" element={<MarketCardPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </div>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<PublicRoute><LandingPage /></PublicRoute>} />
+        <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+        <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
+        <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
+        <Route path="/reset-password" element={<PublicRoute><ResetPasswordPage /></PublicRoute>} />
+
+        {/* Protected routes */}
+        <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+        <Route path="/upcoming" element={<ProtectedRoute><UpcomingPage /></ProtectedRoute>} />
+        <Route path="/markets" element={<ProtectedRoute><MarketsPage /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+        <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+        <Route path="/deposit" element={<ProtectedRoute><DepositPage /></ProtectedRoute>} />
+        <Route path="/withdraw" element={<ProtectedRoute><WithdrawPage /></ProtectedRoute>} />
+        <Route path="/wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
+        <Route path="/market-card/:marketId" element={<ProtectedRoute><MarketCardPage /></ProtectedRoute>} />
+        <Route path="/market-card" element={<ProtectedRoute><MarketCardPage /></ProtectedRoute>} />
+
+        {/* 404 route */}
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
     </Router>
   );
 }
