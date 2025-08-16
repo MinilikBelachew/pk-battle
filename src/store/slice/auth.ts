@@ -85,6 +85,11 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    // Reset loading state after Redux Persist rehydration
+    resetLoadingState: (state) => {
+      state.loading = false;
+      state.error = null;
+    },
   },
 });
 
@@ -100,6 +105,7 @@ export const {
   resetPasswordFailure,
   resetPasswordRequest,
   resetPasswordSuccess,
+  resetLoadingState,
 } = authSlice.actions;
 
 export const authReducer = authSlice.reducer;

@@ -28,6 +28,11 @@ const LoginPage: React.FC = () => {
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  // Debug logging
+  useEffect(() => {
+    console.log('LoginPage - Auth state:', { isAuthenticated, loading, error });
+  }, [isAuthenticated, loading, error]);
+
   useEffect(() => {
     if (isAuthenticated) {
       setSuccessMessage('Login successful! Redirecting to home...');

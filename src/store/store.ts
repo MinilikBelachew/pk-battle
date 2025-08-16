@@ -4,6 +4,7 @@ import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import storage from 'redux-persist/lib/storage';
 import rootReducer from './rootReducer';
 import { rootSaga } from './rootSaga';
+import { resetLoadingState } from './slice/auth';
 
 // Create saga middleware
 const sagaMiddleware = createSagaMiddleware();
@@ -31,7 +32,17 @@ export const store = configureStore({
 });
 
 // Create persistor
-export const persistor = persistStore(store);
+export const persistor = persistStore(store, null, () => {
+  // This callback runs after rehydration is complete
+  console.log('Redux Persist rehydration complete, resetting loading state');
+  store.dispatch(resetLoadingState());
+});
+
+// Add logging for persistor state changes
+persistor.subscribe(() => {
+  const { bootstrapped } = persistor.getState();
+  console.log('Persistor state changed:', { bootstrapped });
+});
 
 // Run saga
 sagaMiddleware.run(rootSaga);

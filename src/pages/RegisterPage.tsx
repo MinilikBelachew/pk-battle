@@ -14,6 +14,11 @@ const RegisterPage: React.FC = () => {
  const [formError, setFormError] = useState<string | null>(null);
  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+ // Debug logging
+ useEffect(() => {
+   console.log('RegisterPage - Auth state:', { isAuthenticated, loading, error });
+ }, [isAuthenticated, loading, error]);
+
  useEffect(() => {
    if (isAuthenticated) {
      setSuccessMessage('Account created successfully! Redirecting to home...');
