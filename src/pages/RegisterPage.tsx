@@ -5,7 +5,7 @@ import TikTokBanner from '../components/ui/TikTokBanner';
 import Spinner from '../components/ui/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerRequest } from '../store/slice/auth';
-import type { RootState } from '../store/rootReducer';
+import type { RootState } from '../store/store';
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
@@ -126,12 +126,7 @@ const getErrorMessage = (error: any) => {
                 {formError || getErrorMessage(error)}
               </div>
             )}
-            {loading && (
-              <div className="flex items-center gap-2 text-white mb-4">
-                <Spinner />
-                <span>Creating your account...</span>
-              </div>
-            )}
+
             {successMessage && (
               <div className="mb-4 rounded-sm bg-green-500 text-white px-4 py-2 text-sm">
                 {successMessage}
@@ -250,17 +245,23 @@ const getErrorMessage = (error: any) => {
                 </div>
               </div>
 
-              {/* Register Button */}
-              <div className="text-center">
-                <button
-                  type="submit"
-                  // Changed to be smaller than the form and centered
-                  className="rounded-sm w-2/3 bg-sunrise text-black py-3 px-4 font-bold hover:bg-opacity-80 transition-colors disabled:opacity-60"
+                            {/* Register Button */}
+              <div className="text-center">
+                <button
+                  type="submit"
                   disabled={loading}
-                >
-                  Create Account
-                </button>
-              </div>
+                  className="rounded-sm w-2/3 bg-sunrise text-black py-3 px-4 font-bold hover:bg-opacity-80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <>
+                      <Spinner />
+                      <span>Creating your account...</span>
+                    </>
+                  ) : (
+                    'Create Account'
+                  )}
+                </button>
+              </div>
 
               {/* Login Link */}
               <div className="text-center">

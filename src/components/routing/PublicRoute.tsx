@@ -1,8 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
-import FullScreenLoader from '../ui/FullScreenLoader';
-import { usePersistStatus } from '../../hooks/usePersistStatus';
 
 interface PublicRouteProps {
   children: React.ReactNode;
@@ -10,16 +8,9 @@ interface PublicRouteProps {
 
 const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  const isRehydrated = usePersistStatus();
   const location = useLocation();
 
-  console.log('PublicRoute - Auth state:', { isAuthenticated, isRehydrated, pathname: location.pathname });
-
-  // Show loader while Redux Persist is rehydrating
-  if (!isRehydrated) {
-    console.log('Redux Persist is rehydrating, showing loader');
-    return <FullScreenLoader message="Loading..." />;
-  }
+  console.log('PublicRoute - Auth state:', { isAuthenticated, pathname: location.pathname });
 
   // If authenticated, redirect to home
   if (isAuthenticated) {
