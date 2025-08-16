@@ -33,6 +33,14 @@ const LoginPage: React.FC = () => {
     console.log('LoginPage - Auth state:', { isAuthenticated, loading, error });
   }, [isAuthenticated, loading, error]);
 
+  // Force reset loading state if it's true on mount
+  useEffect(() => {
+    if (loading) {
+      console.log('LoginPage: Loading is true on mount, dispatching resetLoadingState');
+      dispatch({ type: 'auth/resetLoadingState' });
+    }
+  }, [loading, dispatch]);
+
   useEffect(() => {
     if (isAuthenticated) {
       setSuccessMessage('Login successful! Redirecting to home...');

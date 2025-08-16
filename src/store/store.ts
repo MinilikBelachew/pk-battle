@@ -36,12 +36,33 @@ export const persistor = persistStore(store, null, () => {
   // This callback runs after rehydration is complete
   console.log('Redux Persist rehydration complete, resetting loading state');
   store.dispatch(resetLoadingState());
+  
+  // Log the state after resetting
+  const state = store.getState();
+  console.log('State after resetLoadingState:', {
+    auth: {
+      isAuthenticated: state.auth.isAuthenticated,
+      loading: state.auth.loading,
+      error: state.auth.error,
+      user: state.auth.user
+    }
+  });
 });
 
 // Add logging for persistor state changes
 persistor.subscribe(() => {
   const { bootstrapped } = persistor.getState();
   console.log('Persistor state changed:', { bootstrapped });
+  
+  // If bootstrapped, also check the current auth state
+  if (bootstrapped) {
+    const state = store.getState();
+    console.log('Current auth state after bootstrap:', {
+      isAuthenticated: state.auth.isAuthenticated,
+      loading: state.auth.loading,
+      error: state.auth.error
+    });
+  }
 });
 
 // Run saga

@@ -19,6 +19,14 @@ const RegisterPage: React.FC = () => {
    console.log('RegisterPage - Auth state:', { isAuthenticated, loading, error });
  }, [isAuthenticated, loading, error]);
 
+ // Force reset loading state if it's true on mount
+ useEffect(() => {
+   if (loading) {
+     console.log('RegisterPage: Loading is true on mount, dispatching resetLoadingState');
+     dispatch({ type: 'auth/resetLoadingState' });
+   }
+ }, [loading, dispatch]);
+
  useEffect(() => {
    if (isAuthenticated) {
      setSuccessMessage('Account created successfully! Redirecting to home...');

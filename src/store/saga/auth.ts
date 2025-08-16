@@ -25,10 +25,13 @@ function* registerSaga(action: ReturnType<typeof registerRequest>): Generator<an
   try {
     const baseUrl = getBaseUrl();
     console.log('Registering user with API:', `${baseUrl}api/auth/register`);
+    console.log('Registration payload:', action.payload);
     
     const response = yield call(axios.post, `${baseUrl}api/auth/register`, action.payload, {
       withCredentials: true,
     });
+
+    console.log('Registration response:', response.data);
 
     if (response.data.success) {
       yield put(registerSucess({
@@ -40,6 +43,8 @@ function* registerSaga(action: ReturnType<typeof registerRequest>): Generator<an
     }
   } catch (error: any) {
     console.error('Registration error:', error);
+    console.error('Error response:', error.response?.data);
+    console.error('Error status:', error.response?.status);
     const errorMessage = error.response?.data?.message || 'Registration failed';
     yield put(registerFailure(errorMessage));
   }

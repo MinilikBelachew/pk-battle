@@ -91,6 +91,15 @@ const authSlice = createSlice({
       state.error = null;
     },
   },
+  extraReducers: (builder) => {
+    // Handle Redux Persist rehydration
+    builder.addCase('persist/REHYDRATE', (state) => {
+      // Ensure loading is false after rehydration
+      state.loading = false;
+      state.error = null;
+      console.log('Auth slice: REHYDRATE action handled, loading reset to false');
+    });
+  },
 });
 
 export const {
